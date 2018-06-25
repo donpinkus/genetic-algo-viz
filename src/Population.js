@@ -16,48 +16,67 @@ const calcDistance = (v1, v2) => {
 };
 
 export class Population {
-  constructor(geneCount, originVec, targetVec) {
+  constructor(geneCount, generationCount, originVec, targetVec) {
     this.geneCount = geneCount;
     this.originVec = originVec;
     this.targetVec = targetVec;
 
     // Create a population of rockets
-    this.popsize = 50;
-    this.rockets = [];
+    this.popSize = 50;
+    this.rockets = this.generateGeneration();
 
-    _.times(this.popsize, i => {
-      this.rockets[i] = new Rocket(null, this.geneCount, this.originVec);
-    });
+    this.generations = [];
 
-    this.matingPool = [];
+    for (let genNumber = 1; genNumber <= generationCount; genNumber++) {
+      //   // genNumber === 1 ? null : this.generations[genNumber]
+      const nextGen = this.generateGeneration();
+      //
+      this.generations.push(nextGen);
+    }
   }
 
-  evaluate() {
+  generateGeneration(previousGeneration) {
+    let rockets = [];
+
+    if (!previousGeneration) {
+      _.times(this.popSize, () => {
+        rockets.push(new Rocket(null, this.geneCount, this.originVec));
+      });
+      return rockets;
+    } else {
+      // Evaluate the previous generation, and get the next one.
+      rockets = this.evaluate(previousGeneration);
+    }
+
+    return rockets;
+  }
+
+  evaluate(currentGeneration) {
     // Get the max fitness.
-    const maxFit = _.maxBy(this.rockets, rocket => rocket.fitness);
+    const maxFit = _.maxBy(currentGeneration, rocket => rocket.fitness);
 
-    this.matingPool = [];
+    let matingPool = [];
 
-    _.times(this.popsize, i => {
+    _.times(this.popSize, i => {
       // Add fit rockets a lot more.
       // Divide by maxFit to normalize the values.
-      const n = this.rockets[i].fitness / maxFit * 1000;
+      const n = currentGeneration[i].fitness / maxFit * 1000;
 
       for (let j = 0; j < n; j++) {
-        this.matingPool.push(this.rockets[i]);
+        matingPool.push(currentGeneration[i]);
       }
     });
 
     this.selection = () => {
       let childRockets = [];
 
-      _.times(this.rockets.length, i => {
+      _.times(currentGeneration.length, i => {
         // Choose two parents;
-        const a = Math.floor(Math.random() * this.matingPool.length);
-        const b = Math.floor(Math.random() * this.matginPool.length);
+        const a = Math.floor(Math.random() * matingPool.length);
+        const b = Math.floor(Math.random() * matingPool.length);
 
-        const parentA = this.matingPool[a];
-        const parentB = this.matingPool[b];
+        const parentA = matingPool[a];
+        const parentB = matingPool[b];
         const child = parentA.dna.crossover(parentB);
         child.mutate();
 
@@ -67,6 +86,8 @@ export class Population {
       return childRockets;
     };
   }
+
+  generateGenerations(generationCount = 20) {}
 }
 
 class Rocket {

@@ -11,24 +11,25 @@ class App extends Component {
   constructor(props) {
     super(props);
 
-    this.state = { frameNumber: 1, generationNumber: 1 };
+    this.state = { frameNumber: 0, generationNumber: 0 };
 
     this.sequenceLength = 99;
 
     this.originVec = { x: 0, y: 80 };
     this.targetVec = { x: 0, y: -80 };
 
-    const generationCount = 100;
+    const generationCount = 10;
     const geneCount = 100;
 
     this.populations = [];
-    this.populations[0] = {
-      generations: _.times(
-        generationCount,
-        () =>
-          new Population(geneCount, this.originVec, this.targetVec, geneCount)
-      )
-    };
+    this.populations[0] = new Population(
+      geneCount,
+      generationCount,
+      this.originVec,
+      this.targetVec
+    );
+
+    console.log("population", this.populations);
   }
 
   componentDidMount() {

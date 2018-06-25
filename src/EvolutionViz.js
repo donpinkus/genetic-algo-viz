@@ -4,7 +4,7 @@ class EvolutionVis extends Component {
   render() {
     const f = this.props.frameNumber;
 
-    const previousPopulations =
+    const previousGenerations =
       this.props.generationNumber > 1
         ? this.props.population.generations.slice(
             0,
@@ -12,7 +12,7 @@ class EvolutionVis extends Component {
           )
         : [];
 
-    const currentPopulation = this.props.population.generations[
+    const currentGeneration = this.props.population.generations[
       this.props.generationNumber
     ];
 
@@ -24,13 +24,13 @@ class EvolutionVis extends Component {
           height="100%"
           style={{ border: "1px solid #14172B" }}
         >
-          {/* {previousPopulations.reverse().map((population, i) => {
+          {/* {previousGenerations.reverse().map((population, i) => {
             return population.rockets.map((rocket, j) => {
               const genesToPath = rocket.posVectors.map(
                 pos => `L ${pos.x},${pos.y}`
               );
 
-              let d = `M ${currentPopulation.originVec.x},${currentPopulation
+              let d = `M ${currentGeneration.originVec.x},${currentGeneration
                 .originVec.y} ${genesToPath.join(" ")}`;
 
               return (
@@ -45,13 +45,13 @@ class EvolutionVis extends Component {
               );
             });
           })} */}
-          {currentPopulation.rockets.map((rocket, i) => {
+          {currentGeneration.map((rocket, i) => {
             const genesToPath = rocket.posVectors
-              .slice(0, f)
+              .slice(0, f + 1) // Frame number is 0 indexed.
               .map(pos => `L ${pos.x},${pos.y}`);
 
-            let d = `M ${currentPopulation.originVec.x},${currentPopulation
-              .originVec.y} ${genesToPath.join(" ")}`;
+            let d = `M ${this.props.population.originVec.x},${this.props
+              .population.originVec.y} ${genesToPath.join(" ")}`;
 
             return (
               <g key={i}>
@@ -72,14 +72,14 @@ class EvolutionVis extends Component {
           })}
 
           <circle
-            cx={currentPopulation.targetVec.x}
-            cy={currentPopulation.targetVec.y}
+            cx={this.props.population.targetVec.x}
+            cy={this.props.population.targetVec.y}
             r="5"
             fill="#83C183"
           />
           <circle
-            cx={currentPopulation.originVec.x}
-            cy={currentPopulation.originVec.y}
+            cx={this.props.population.originVec.x}
+            cy={this.props.population.originVec.y}
             r="5"
             fill="#4285F4"
           />
