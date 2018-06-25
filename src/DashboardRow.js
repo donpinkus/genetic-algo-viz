@@ -3,24 +3,9 @@ import styled from "styled-components";
 import _ from "lodash";
 
 import { pageMargin } from "./Styles";
-import { Population } from "./Population";
 import EvolutionViz from "./EvolutionViz";
 
 class DashboardRow extends Component {
-  constructor(props) {
-    super(props);
-
-    this.originVec = { x: 0, y: 80 };
-    this.targetVec = { x: 0, y: -80 };
-
-    const generationCount = 100;
-
-    this.generations = _.times(
-      generationCount,
-      () => new Population(this.originVec, this.targetVec)
-    );
-  }
-
   render() {
     return (
       <SDashboardRow>
@@ -36,9 +21,9 @@ class DashboardRow extends Component {
         </SItem>
         <SItem>
           <EvolutionViz
-            frameNumber={this.props.frameNumber}
+            population={this.props.population}
             generationNumber={this.props.generationNumber}
-            generations={this.generations}
+            frameNumber={this.props.frameNumber}
           />
         </SItem>
         <SItem />

@@ -1,9 +1,11 @@
 import React, { Component } from "react";
 import styled from "styled-components";
+import _ from "lodash";
 
 import { pageMargin } from "./Styles";
 import Timeline from "./Timeline";
 import DashboardRow from "./DashboardRow";
+import { Population } from "./Population";
 
 class App extends Component {
   constructor(props) {
@@ -12,6 +14,19 @@ class App extends Component {
     this.state = { frameNumber: 1, generationNumber: 1 };
 
     this.sequenceLength = 99;
+
+    this.originVec = { x: 0, y: 80 };
+    this.targetVec = { x: 0, y: -80 };
+
+    const generationCount = 100;
+
+    this.populations = [];
+    this.populations[0] = {
+      generations: _.times(
+        generationCount,
+        () => new Population(this.originVec, this.targetVec)
+      )
+    };
   }
 
   componentDidMount() {
@@ -49,8 +64,9 @@ class App extends Component {
               <div>Final Fitness</div>
             </SDashboardHeader>
             <DashboardRow
-              frameNumber={this.state.frameNumber}
+              population={this.populations[0]}
               generationNumber={this.state.generationNumber}
+              frameNumber={this.state.frameNumber}
             />
           </SDashboardSection>
         </div>

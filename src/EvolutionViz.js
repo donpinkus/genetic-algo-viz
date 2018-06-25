@@ -6,10 +6,13 @@ class EvolutionVis extends Component {
 
     const previousPopulations =
       this.props.generationNumber > 1
-        ? this.props.generations.slice(0, this.props.generationNumber - 1)
+        ? this.props.population.generations.slice(
+            0,
+            this.props.generationNumber - 1
+          )
         : [];
 
-    const currentPopulation = this.props.generations[
+    const currentPopulation = this.props.population.generations[
       this.props.generationNumber
     ];
 
