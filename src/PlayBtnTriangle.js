@@ -31,21 +31,15 @@ const PlayBtnTriangle = () => (
         />
       </filter>
     </defs>
-    <g
-      id="Page-1"
-      stroke="none"
-      stroke-width="1"
-      fill="none"
-      fill-rule="evenodd"
-    >
+    <g id="Page-1" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
       <g id="Triangle">
         <use
           fill="black"
-          fill-opacity="1"
+          fillOpacity="1"
           filter="url(#filter-2)"
           xlinkHref="#path-1"
         />
-        <use fill="#FFFFFF" fill-rule="evenodd" xlinkHref="#path-1" />
+        <use fill="#FFFFFF" fillRule="evenodd" xlinkHref="#path-1" />
       </g>
     </g>
   </svg>

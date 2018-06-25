@@ -1,9 +1,63 @@
 import React, { Component } from "react";
-import logo from "./logo.svg";
 import styled from "styled-components";
 
-import Timeline from "./Timeline";
 import { pageMargin } from "./Styles";
+import Timeline from "./Timeline";
+import DashboardRow from "./DashboardRow";
+
+class App extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = { frameNumber: 1, generationNumber: 1 };
+
+    this.sequenceLength = 99;
+  }
+
+  componentDidMount() {
+    this.setState({ frameNumber: this.state.frameNumber + 1 });
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.frameNumber < this.sequenceLength) {
+      setTimeout(() => {
+        this.setState({ frameNumber: this.state.frameNumber + 1 });
+      }, 10);
+    } else {
+      setTimeout(() => {
+        this.setState({
+          frameNumber: 1,
+          generationNumber: this.state.generationNumber + 1
+        });
+      }, 1000);
+    }
+  }
+
+  render() {
+    return (
+      <main className="App">
+        <SHeader>
+          <span>Evolution Visualizer</span>
+        </SHeader>
+        <div style={{ width: 1120, margin: "0 auto" }}>
+          <Timeline />
+          <SDashboardSection>
+            <SDashboardHeader>
+              <div>Fitness Function</div>
+              <div>Evolution over time</div>
+              <div>Fitness over time</div>
+              <div>Final Fitness</div>
+            </SDashboardHeader>
+            <DashboardRow
+              frameNumber={this.state.frameNumber}
+              generationNumber={this.state.generationNumber}
+            />
+          </SDashboardSection>
+        </div>
+      </main>
+    );
+  }
+}
 
 const SHeader = styled.header`
   background: #222940;
@@ -39,35 +93,5 @@ const SDashboardHeader = styled.div`
     opacity: 0.75;
   }
 `;
-
-const SDashboardRow = styled.div`
-  background: #1e2339;
-  height: 290px;
-  margin-bottom: 2px;
-`;
-
-class App extends Component {
-  render() {
-    return (
-      <main className="App">
-        <SHeader>
-          <span>Evolution Visualizer</span>
-        </SHeader>
-        <Timeline />
-        <SDashboardSection>
-          <SDashboardHeader>
-            <div>Fitness Function</div>
-            <div>Evolution over time</div>
-            <div>Fitness over time</div>
-            <div>Final Fitness</div>
-          </SDashboardHeader>
-          <SDashboardRow />
-          <SDashboardRow />
-          <SDashboardRow />
-        </SDashboardSection>
-      </main>
-    );
-  }
-}
 
 export default App;
