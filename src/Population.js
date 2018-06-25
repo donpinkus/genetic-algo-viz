@@ -16,7 +16,8 @@ const calcDistance = (v1, v2) => {
 };
 
 export class Population {
-  constructor(originVec, targetVec) {
+  constructor(geneCount, originVec, targetVec) {
+    this.geneCount = geneCount;
     this.originVec = originVec;
     this.targetVec = targetVec;
 
@@ -25,7 +26,7 @@ export class Population {
     this.rockets = [];
 
     _.times(this.popsize, i => {
-      this.rockets[i] = new Rocket(null, this.originVec);
+      this.rockets[i] = new Rocket(null, this.geneCount, this.originVec);
     });
 
     this.matingPool = [];
@@ -60,7 +61,7 @@ export class Population {
         const child = parentA.dna.crossover(parentB);
         child.mutate();
 
-        childRockets[i] = new Rocket(child, this.originVec);
+        childRockets[i] = new Rocket(child, this.geneCount, this.originVec);
       });
 
       return childRockets;
@@ -69,10 +70,10 @@ export class Population {
 }
 
 class Rocket {
-  constructor(dna, originVec, targetVec) {
+  constructor(dna, geneCount, originVec, targetVec) {
     this.crashed = false;
 
-    this.dna = dna || new DNA();
+    this.dna = dna || new DNA(null, geneCount);
 
     // Acceleration
     this.accVectors = this.dna.genes;

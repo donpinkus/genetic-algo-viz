@@ -19,12 +19,14 @@ class App extends Component {
     this.targetVec = { x: 0, y: -80 };
 
     const generationCount = 100;
+    const geneCount = 100;
 
     this.populations = [];
     this.populations[0] = {
       generations: _.times(
         generationCount,
-        () => new Population(this.originVec, this.targetVec)
+        () =>
+          new Population(geneCount, this.originVec, this.targetVec, geneCount)
       )
     };
   }
