@@ -18,13 +18,13 @@ class App extends Component {
     this.originVec = { x: 0, y: 80 };
     this.targetVec = { x: 0, y: -80 };
 
-    const generationCount = 10;
+    this.generationCount = 100;
     const geneCount = 100;
 
     this.populations = [];
     this.populations[0] = new Population(
       geneCount,
-      generationCount,
+      this.generationCount,
       this.originVec,
       this.targetVec
     );
@@ -33,21 +33,29 @@ class App extends Component {
   }
 
   componentDidMount() {
-    this.setState({ frameNumber: this.state.frameNumber + 1 });
+    this.setState({ frameNumber: this.state.frameNumber });
   }
 
   componentDidUpdate(prevProps, prevState) {
+    // Increment frame
     if (this.state.frameNumber < this.sequenceLength) {
       setTimeout(() => {
         this.setState({ frameNumber: this.state.frameNumber + 1 });
       }, 10);
-    } else {
+    } else if (this.state.generationNumber < this.generationCount) {
+      // Increment generation
       setTimeout(() => {
         this.setState({
-          frameNumber: 1,
+          frameNumber: 0,
           generationNumber: this.state.generationNumber + 1
         });
       }, 1000);
+    } else {
+      // Reset generation
+      this.setState({
+        frameNumber: 0,
+        generationNumber: 0
+      });
     }
   }
 

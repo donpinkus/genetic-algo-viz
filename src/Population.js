@@ -8,13 +8,6 @@ const randVector = (length = 1) => {
   return { x, y };
 };
 
-const calcDistance = (v1, v2) => {
-  let a = v1.x - v2.x;
-  let b = v1.y - v2.y;
-
-  return Math.sqrt(a * a + b * b);
-};
-
 export class Population {
   constructor(geneCount, generationCount, originVec, targetVec) {
     this.geneCount = geneCount;
@@ -27,67 +20,93 @@ export class Population {
 
     this.generations = [];
 
-    for (let genNumber = 1; genNumber <= generationCount; genNumber++) {
-      //   // genNumber === 1 ? null : this.generations[genNumber]
-      const nextGen = this.generateGeneration();
-      //
+    for (let genNumber = 0; genNumber < generationCount; genNumber++) {
+      const nextGen = this.generateGeneration(
+        genNumber === 0 ? null : this.generations[genNumber - 1]
+      );
+
       this.generations.push(nextGen);
     }
   }
 
-  generateGeneration(previousGeneration) {
+  generateGeneration(currentGeneration) {
     let rockets = [];
 
-    if (!previousGeneration) {
+    if (!currentGeneration) {
       _.times(this.popSize, () => {
-        rockets.push(new Rocket(null, this.geneCount, this.originVec));
+        rockets.push(
+          new Rocket(null, this.geneCount, this.originVec, this.targetVec)
+        );
       });
-      return rockets;
     } else {
+      console.log("creating 1 generation using childen");
       // Evaluate the previous generation, and get the next one.
-      rockets = this.evaluate(previousGeneration);
+      rockets = this.generateFromCurrentGeneration(currentGeneration);
     }
 
     return rockets;
   }
 
-  evaluate(currentGeneration) {
-    // Get the max fitness.
-    const maxFit = _.maxBy(currentGeneration, rocket => rocket.fitness);
+  generateFromCurrentGeneration(currentGeneration) {
+    // Sort parents by fitness. TODO: don't think it's necessary
+    const sortedParents = currentGeneration.sort(
+      (a, b) => a.fitness < b.fitness
+    );
 
-    let matingPool = [];
+    // First iteration its the child, every other iteratioin its the accumulator.
+    const totalFitness = currentGeneration.reduce(
+      (a, b) => (a.fitness || a) + b.fitness
+    );
 
-    _.times(this.popSize, i => {
-      // Add fit rockets a lot more.
-      // Divide by maxFit to normalize the values.
-      const n = currentGeneration[i].fitness / maxFit * 1000;
+    // Create a new population.
+    let children = [];
 
-      for (let j = 0; j < n; j++) {
-        matingPool.push(currentGeneration[i]);
-      }
-    });
+    // 100t
+    _.times(this.popSize, () => {
+      let pA, pB;
 
-    this.selection = () => {
-      let childRockets = [];
+      // Random parents
+      const a = Math.random();
+      const b = Math.random();
 
-      _.times(currentGeneration.length, i => {
-        // Choose two parents;
-        const a = Math.floor(Math.random() * matingPool.length);
-        const b = Math.floor(Math.random() * matingPool.length);
+      // Find parent
+      let accFitness = 0;
+      sortedParents.forEach(parent => {
+        // Normalize the fitness.
+        accFitness += parent.fitness / totalFitness;
 
-        const parentA = matingPool[a];
-        const parentB = matingPool[b];
-        const child = parentA.dna.crossover(parentB);
-        child.mutate();
+        // When accumulated fitness crosses the chosen a & b, set the parent.
+        // Example:
+        // a = 0.2...
+        // If accFitness is 0.1 false. If accFitness is 0.3 true.
+        if (accFitness >= a && _.isUndefined(pA)) {
+          pA = parent;
+        }
 
-        childRockets[i] = new Rocket(child, this.geneCount, this.originVec);
+        if (accFitness >= b && _.isUndefined(pB)) {
+          pB = parent;
+        }
       });
 
-      return childRockets;
-    };
-  }
+      if (pA && pB && pA === pB) {
+        pA =
+          sortedParents[Math.floor(Math.random() * (sortedParents.length - 1))];
+      }
 
-  generateGenerations(generationCount = 20) {}
+      // Cross parents
+      const childDNA = pA.dna.crossover(pB);
+      const child = new Rocket(
+        childDNA,
+        this.geneCount,
+        this.originVec,
+        this.targetVec
+      );
+
+      children.push(child);
+    });
+
+    return children;
+  }
 }
 
 class Rocket {
@@ -100,7 +119,7 @@ class Rocket {
     this.accVectors = this.dna.genes;
 
     // Velocity
-    this.velVectors = [randVector()];
+    this.velVectors = [{ x: 0, y: 0 }];
 
     this.accVectors.forEach((acc, i) => {
       const nextVelocity = {
@@ -125,41 +144,46 @@ class Rocket {
 
     // Fitness
     this.targetVec = targetVec;
-    this.fitness;
+    this.fitness = this.getFinalFitness();
   }
 
-  calcFitness() {
-    const distance = calcDistance(
-      this.pos.x,
-      this.targetVec.x,
-      this.pos.y,
-      this.targetVec.y
-    );
+  getFinalFitness() {
+    const calcDistance = (v1, v2) => {
+      const a = v1.x - v2.x;
+      const b = v1.y - v2.y;
+
+      return Math.sqrt(a * a + b * b);
+    };
+
+    const finalPos = this.posVectors[this.posVectors.length - 1];
+
+    const distance = calcDistance(finalPos, this.targetVec);
 
     // TODO: using a power function for fitness
-    this.fitness = Math.pow(1 / distance, 10);
+    return Math.pow(1 / distance, 10);
   }
 }
 
 class DNA {
   constructor(genes, geneCount = 100) {
+    this.geneCount = geneCount;
     this.genes = genes || _.times(geneCount, i => randVector(0.1));
   }
 
   crossover(partner) {
-    let newGenes = [];
     // Get a random midpoint, we'll take first half of genes from self, second half from parent.
-    let mid = Math.floor(Math.random() * this.genes.length);
+    const mid = Math.floor(Math.random() * this.genes.length);
 
-    for (let i = 0; i < this.genes.length; i++) {
-      if (i > mid) {
-        newGenes[i] = this.genes[i];
-      } else {
-        newGenes[i] = partner.dna.genes[i];
-      }
-    }
+    const newGenes = _.times(this.geneCount, i => {
+      return i > mid ? this.genes[i] : partner.dna.genes[i];
+    });
 
-    return new DNA(newGenes);
+    const mutationRate = 0.1;
+    const mutatedNewGenes = newGenes.map(
+      gene => (Math.random() < mutationRate ? randVector(0.1) : gene)
+    );
+
+    return new DNA(mutatedNewGenes);
   }
 
   mutate() {
