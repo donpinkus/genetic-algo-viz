@@ -27,6 +27,12 @@ export class Population {
 
       this.generations.push(nextGen);
     }
+
+    this.generationMaxFitnesses = this.generations.map(generation => {
+      return _.maxBy(generation, rocket => rocket.fitness).fitness;
+    });
+
+    console.log(this.generationMaxFitnesses);
   }
 
   generateGeneration(currentGeneration) {
@@ -39,7 +45,6 @@ export class Population {
         );
       });
     } else {
-      console.log("creating 1 generation using childen");
       // Evaluate the previous generation, and get the next one.
       rockets = this.generateFromCurrentGeneration(currentGeneration);
     }

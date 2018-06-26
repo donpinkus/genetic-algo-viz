@@ -22,7 +22,7 @@ class EvolutionVis extends Component {
           viewBox="-100 -100 200 200"
           width="100%"
           height="100%"
-          style={{ border: "1px solid #14172B" }}
+          // style={{ border: "1px solid #14172B" }}
         >
           {/* {previousGenerations.reverse().map((population, i) => {
             return population.rockets.map((rocket, j) => {
