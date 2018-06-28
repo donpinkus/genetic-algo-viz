@@ -4,6 +4,7 @@ import _ from "lodash";
 
 import { pageMargin } from "./Styles";
 import EvolutionViz from "./EvolutionViz";
+import MaxFitnessViz from "./MaxFitnessViz";
 
 class DashboardRow extends Component {
   render() {
@@ -26,7 +27,12 @@ class DashboardRow extends Component {
             frameNumber={this.props.frameNumber}
           />
         </SItem>
-        <SItem />
+        <SItem>
+          <MaxFitnessViz
+            population={this.props.population}
+            generationNumber={this.props.generationNumber}
+          />
+        </SItem>
         <SItem />
       </SDashboardRow>
     );
