@@ -31,8 +31,6 @@ export class Population {
     this.generationMaxFitnesses = this.generations.map(generation => {
       return _.maxBy(generation, rocket => rocket.fitness).fitness;
     });
-
-    console.log(this.generationMaxFitnesses);
   }
 
   generateGeneration(currentGeneration) {
@@ -183,19 +181,11 @@ class DNA {
       return i > mid ? this.genes[i] : partner.dna.genes[i];
     });
 
-    const mutationRate = 0.1;
+    const mutationRate = 0.01;
     const mutatedNewGenes = newGenes.map(
       gene => (Math.random() < mutationRate ? randVector(0.1) : gene)
     );
 
     return new DNA(mutatedNewGenes);
-  }
-
-  mutate() {
-    for (let i = 0; this.genes.length; i++) {
-      if (Math.random() < 0.01) {
-        this.genes[i] = randVector(0.1);
-      }
-    }
   }
 }

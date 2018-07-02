@@ -18,7 +18,7 @@ class App extends Component {
     this.originVec = { x: 0, y: 80 };
     this.targetVec = { x: 0, y: -80 };
 
-    this.generationCount = 100;
+    this.generationCount = 20;
     const geneCount = 100;
 
     this.populations = [];
@@ -41,7 +41,7 @@ class App extends Component {
     if (this.state.frameNumber < this.sequenceLength) {
       setTimeout(() => {
         this.setState({ frameNumber: this.state.frameNumber + 1 });
-      }, 10);
+      }, 5);
     } else if (this.state.generationNumber < this.generationCount) {
       // Increment generation
       setTimeout(() => {
@@ -49,7 +49,7 @@ class App extends Component {
           frameNumber: 0,
           generationNumber: this.state.generationNumber + 1
         });
-      }, 1000);
+      }, 500);
     } else {
       // Reset generation
       this.setState({
