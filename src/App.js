@@ -47,14 +47,14 @@ class App extends Component {
       setTimeout(() => {
         this.setState({
           frameNumber: 0,
-          generationNumber: this.state.generationNumber + 1
+          generationNumber: this.state.generationNumber + 1,
         });
       }, 500);
     } else {
       // Reset generation
       this.setState({
         frameNumber: 0,
-        generationNumber: 0
+        generationNumber: 0,
       });
     }
   }
