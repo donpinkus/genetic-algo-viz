@@ -7,6 +7,12 @@ import Timeline from "./Timeline";
 import DashboardRow from "./DashboardRow";
 import { Population } from "./Population";
 
+/*
+1. At app level we define the population size, generations, genecounts, etc.
+
+2. We generate a population, which includes how the population evolves over generations
+
+*/
 class App extends Component {
   constructor(props) {
     super(props);
@@ -18,7 +24,8 @@ class App extends Component {
     this.originVec = { x: 0, y: 80 };
     this.targetVec = { x: 0, y: -80 };
 
-    this.generationCount = 20;
+    this.generationCount = 15;
+
     const geneCount = 100;
 
     this.populations = [];
@@ -42,8 +49,8 @@ class App extends Component {
       setTimeout(() => {
         this.setState({ frameNumber: this.state.frameNumber + 1 });
       }, 5);
-    } else if (this.state.generationNumber < this.generationCount) {
-      // Increment generation
+    } else if (this.state.generationNumber < this.generationCount - 1) {
+      // The "- 1" is so that the last time we increment the generation count is when we're setting it equal to the generation count.
       setTimeout(() => {
         this.setState({
           frameNumber: 0,
@@ -51,6 +58,7 @@ class App extends Component {
         });
       }, 500);
     } else {
+      console.log("reset generation number");
       // Reset generation
       this.setState({
         frameNumber: 0,
@@ -66,7 +74,10 @@ class App extends Component {
           <span>Evolution Visualizer</span>
         </SHeader>
         <div style={{ width: 1120, margin: "0 auto" }}>
-          <Timeline />
+          <Timeline
+            generationNumber={this.state.generationNumber}
+            max={this.generationCount}
+          />
           <SDashboardSection>
             <SDashboardHeader>
               <div>Fitness Function</div>

@@ -12,9 +12,8 @@ class EvolutionVis extends Component {
           )
         : [];
 
-    const currentGeneration = this.props.population.generations[
-      this.props.generationNumber
-    ];
+    const currentGeneration =
+      this.props.population.generations[this.props.generationNumber];
 
     return (
       <div>
@@ -48,23 +47,24 @@ class EvolutionVis extends Component {
           {currentGeneration.map((rocket, i) => {
             const genesToPath = rocket.posVectors
               .slice(0, f + 1) // Frame number is 0 indexed.
-              .map(pos => `L ${pos.x},${pos.y}`);
+              .map((pos) => `L ${pos.x},${pos.y}`);
 
-            let d = `M ${this.props.population.originVec.x},${this.props
-              .population.originVec.y} ${genesToPath.join(" ")}`;
+            let d = `M ${this.props.population.originVec.x},${
+              this.props.population.originVec.y
+            } ${genesToPath.join(" ")}`;
 
             return (
               <g key={i}>
                 <path
                   d={d}
-                  stroke="rgba(225, 114, 125, 0.8)"
+                  stroke="rgba(225, 114, 125, 0.4)"
                   strokeWidth="1"
                   fill="none"
                 />
                 <circle
                   cx={rocket.posVectors[f].x}
                   cy={rocket.posVectors[f].y}
-                  r="2"
+                  r="1.25"
                   fill="#E1727D"
                 />
               </g>

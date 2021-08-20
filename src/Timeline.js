@@ -3,23 +3,33 @@ import styled from "styled-components";
 import PlayBtnTriangle from "./PlayBtnTriangle";
 import { pageMargin } from "./Styles";
 
-const Timeline = () => (
-  <STimelineSection>
-    <SPlayButton onClick={() => alert("run!")}>
-      <PlayBtnTriangle />
-    </SPlayButton>
-    <STimelineContainer>
-      <STimelineLine />
-      <STimelineDot />
-      <STimelineTopLabel>Generation</STimelineTopLabel>
-      <STimelineBottomLabels>
-        <span>1</span>
-        <span>50</span>
-        <span>100</span>
-      </STimelineBottomLabels>
-    </STimelineContainer>
-  </STimelineSection>
-);
+const Timeline = ({ generationNumber, max }) => {
+  const rightPct = (generationNumber / max) * 100;
+
+  console.log(generationNumber, max, rightPct);
+
+  return (
+    <STimelineSection>
+      <SPlayButton onClick={() => alert("run!")}>
+        <PlayBtnTriangle />
+      </SPlayButton>
+      <STimelineContainer>
+        <STimelineLine />
+        <STimelineDot
+          style={{
+            left: `${rightPct}%`,
+          }}
+        />
+        <STimelineTopLabel>Generation</STimelineTopLabel>
+        <STimelineBottomLabels>
+          <span>1</span>
+          <span>{Math.floor(max / 2)}</span>
+          <span>{max}</span>
+        </STimelineBottomLabels>
+      </STimelineContainer>
+    </STimelineSection>
+  );
+};
 
 const STimelineSection = styled.section`
   padding: ${pageMargin * 0.75}px ${pageMargin}px;
@@ -52,6 +62,7 @@ const STimelineLine = styled.div`
   top: 50%;
   left: 0;
   right: 0;
+  opacity: 0.4;
 `;
 
 const STimelineTopLabel = styled.div`

@@ -16,24 +16,27 @@ export class Population {
 
     // Create a population of rockets
     this.popSize = 50;
-    this.rockets = this.generateGeneration();
 
     this.generations = [];
 
-    for (let genNumber = 0; genNumber < generationCount; genNumber++) {
-      const nextGen = this.generateGeneration(
-        genNumber === 0 ? null : this.generations[genNumber - 1]
-      );
+    for (let i = 0; i < generationCount; i++) {
+      let nextGen;
+
+      if (i === 0) {
+        nextGen = this.createGeneration();
+      } else {
+        nextGen = this.createGeneration(this.generations[i - 1]);
+      }
 
       this.generations.push(nextGen);
     }
 
-    this.generationMaxFitnesses = this.generations.map(generation => {
-      return _.maxBy(generation, rocket => rocket.fitness).fitness;
+    this.generationMaxFitnesses = this.generations.map((generation) => {
+      return _.maxBy(generation, (rocket) => rocket.fitness).fitness;
     });
   }
 
-  generateGeneration(currentGeneration) {
+  createGeneration(currentGeneration) {
     let rockets = [];
 
     if (!currentGeneration) {
@@ -74,7 +77,7 @@ export class Population {
 
       // Find parent
       let accFitness = 0;
-      sortedParents.forEach(parent => {
+      sortedParents.forEach((parent) => {
         // Normalize the fitness.
         accFitness += parent.fitness / totalFitness;
 
@@ -127,7 +130,7 @@ class Rocket {
     this.accVectors.forEach((acc, i) => {
       const nextVelocity = {
         x: this.velVectors[i].x + acc.x,
-        y: this.velVectors[i].y + acc.y
+        y: this.velVectors[i].y + acc.y,
       };
 
       this.velVectors.push(nextVelocity);
@@ -139,7 +142,7 @@ class Rocket {
     this.velVectors.forEach((vel, i) => {
       const nextPos = {
         x: this.posVectors[i].x + vel.x,
-        y: this.posVectors[i].y + vel.y
+        y: this.posVectors[i].y + vel.y,
       };
 
       this.posVectors.push(nextPos);
@@ -170,22 +173,25 @@ class Rocket {
 class DNA {
   constructor(genes, geneCount = 100) {
     this.geneCount = geneCount;
-    this.genes = genes || _.times(geneCount, i => randVector(0.1));
+    this.genes = genes || _.times(geneCount, (i) => randVector(0.1));
   }
 
   crossover(partner) {
     // Get a random midpoint, we'll take first half of genes from self, second half from parent.
     const mid = Math.floor(Math.random() * this.genes.length);
 
-    const newGenes = _.times(this.geneCount, i => {
-      return i > mid ? this.genes[i] : partner.dna.genes[i];
-    });
+    const newGenes = [
+      ...this.genes.slice(0, mid),
+      ...partner.dna.genes.slice(mid, this.genes.length),
+    ];
 
     const mutationRate = 0.01;
-    const mutatedNewGenes = newGenes.map(
-      gene => (Math.random() < mutationRate ? randVector(0.1) : gene)
+    const mutatedNewGenes = newGenes.map((gene) =>
+      Math.random() < mutationRate ? randVector(0.1) : gene
     );
 
     return new DNA(mutatedNewGenes);
   }
 }
+
+// O(popSize * geneCount);
