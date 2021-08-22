@@ -17,19 +17,41 @@ class App extends Component {
   constructor(props) {
     super(props);
 
-    this.state = { frameNumber: 0, generationNumber: 0 };
+    this.state = { frameNumber: 0, generationNumber: 0, isPlaying: false };
 
     this.sequenceLength = 99;
 
-    this.originVec = { x: 0, y: 80 };
-    this.targetVec = { x: 0, y: -80 };
+    this.originVec = { x: -60, y: -80 };
+    this.targetVec = { x: 60, y: 80 };
 
     this.generationCount = 15;
 
     const geneCount = 100;
 
     this.populations = [];
+
     this.populations[0] = new Population(
+      geneCount,
+      this.generationCount,
+      this.originVec,
+      this.targetVec
+    );
+
+    this.populations[1] = new Population(
+      geneCount,
+      this.generationCount,
+      this.originVec,
+      this.targetVec
+    );
+
+    this.populations[2] = new Population(
+      geneCount,
+      this.generationCount,
+      this.originVec,
+      this.targetVec
+    );
+
+    this.populations[3] = new Population(
       geneCount,
       this.generationCount,
       this.originVec,
@@ -40,10 +62,12 @@ class App extends Component {
   }
 
   componentDidMount() {
-    this.setState({ frameNumber: this.state.frameNumber });
+    this.setState({
+      isPlaying: true,
+    });
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  advanceFrameOrResetGeneration() {
     // Increment frame
     if (this.state.frameNumber < this.sequenceLength) {
       setTimeout(() => {
@@ -67,26 +91,58 @@ class App extends Component {
     }
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.isPlaying) {
+      this.advanceFrameOrResetGeneration();
+    }
+  }
+
+  startPlaying() {
+    this.setState({ isPlaying: true });
+  }
+
+  stopPlaying() {
+    this.setState({ isPlaying: false });
+  }
+
   render() {
     return (
       <main className="App">
         <SHeader>
-          <span>Evolution Visualizer</span>
+          <span>Genetic Algorithm Visualizer</span>
         </SHeader>
         <div style={{ width: 1120, margin: "0 auto" }}>
           <Timeline
             generationNumber={this.state.generationNumber}
             max={this.generationCount}
+            isPlaying={this.state.isPlaying}
+            onPlayClick={this.startPlaying.bind(this)}
+            onPauseClick={this.stopPlaying.bind(this)}
           />
           <SDashboardSection>
             <SDashboardHeader>
-              <div>Fitness Function</div>
+              <div>Fitness function</div>
               <div>Evolution over time</div>
-              <div>Fitness over time</div>
-              <div>Final Fitness</div>
+              <div>Max fitness over time</div>
+              <div>Final max fitness</div>
             </SDashboardHeader>
             <DashboardRow
               population={this.populations[0]}
+              generationNumber={this.state.generationNumber}
+              frameNumber={this.state.frameNumber}
+            />
+            <DashboardRow
+              population={this.populations[1]}
+              generationNumber={this.state.generationNumber}
+              frameNumber={this.state.frameNumber}
+            />
+            <DashboardRow
+              population={this.populations[2]}
+              generationNumber={this.state.generationNumber}
+              frameNumber={this.state.frameNumber}
+            />
+            <DashboardRow
+              population={this.populations[3]}
               generationNumber={this.state.generationNumber}
               frameNumber={this.state.frameNumber}
             />
@@ -101,11 +157,11 @@ const SHeader = styled.header`
   background: #222940;
   height: 58px;
   color: #ffffff;
-  text-align: left;
   display: flex;
   align-items: center;
-  font-size: 25px;
-  font-weight: 300;
+  justify-content: center;
+  font-size: 22px;
+  font-weight: 3020;
   padding: 0 ${pageMargin}px;
   span {
     opacity: 0.75;
@@ -113,7 +169,7 @@ const SHeader = styled.header`
 `;
 
 const SDashboardSection = styled.section`
-  margin: 0 ${pageMargin}px;
+  margin: 0 ${pageMargin}px 50px;
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5);
 `;
 

@@ -1,18 +1,33 @@
 import React from "react";
 import styled from "styled-components";
-import PlayBtnTriangle from "./PlayBtnTriangle";
+
 import { pageMargin } from "./Styles";
 
-const Timeline = ({ generationNumber, max }) => {
-  const rightPct = (generationNumber / max) * 100;
+const Timeline = ({
+  generationNumber,
+  max,
+  onPauseClick,
+  onPlayClick,
+  isPlaying,
+}) => {
+  console.log("isPlaying", isPlaying);
 
-  console.log(generationNumber, max, rightPct);
+  const rightPct = (generationNumber / max) * 100;
 
   return (
     <STimelineSection>
-      <SPlayButton onClick={() => alert("run!")}>
-        <PlayBtnTriangle />
-      </SPlayButton>
+      {isPlaying === true ? (
+        <SPlayButton onClick={onPauseClick}>
+          <img src="/pause.svg" style={{ marginBottom: -4 }} />
+          <div>pause</div>
+        </SPlayButton>
+      ) : (
+        <SPlayButton onClick={onPlayClick}>
+          <img src="/play.svg" style={{ marginBottom: 4 }} />
+          <div>play</div>
+        </SPlayButton>
+      )}
+
       <STimelineContainer>
         <STimelineLine />
         <STimelineDot
@@ -43,8 +58,18 @@ const SPlayButton = styled.div`
   width: 52px;
   height: 52px;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  color: white;
+  text-transform: uppercase;
+  font-size: 10px;
+  cursor: pointer;
+
+  &:hover {
+    transform: scale(1.1);
+    transition: all 0.14s ease-in-out;
+  }
 `;
 
 const STimelineContainer = styled.div`

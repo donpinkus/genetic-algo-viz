@@ -10,6 +10,7 @@ const randVector = (length = 1) => {
 
 export class Population {
   constructor(geneCount, generationCount, originVec, targetVec) {
+    // TODO: Spread over this
     this.geneCount = geneCount;
     this.originVec = originVec;
     this.targetVec = targetVec;

@@ -20,7 +20,7 @@ class DashboardRow extends Component {
             />
           </svg>
         </SItem>
-        <SItem>
+        <SItem style={{ padding: 0 }}>
           <EvolutionViz
             population={this.props.population}
             generationNumber={this.props.generationNumber}
@@ -51,6 +51,7 @@ const SItem = styled.div`
   align-items: center;
   justify-content: center;
   padding: ${pageMargin}px;
+  border: 1px solid #15172b66;
 `;
 
 export default DashboardRow;

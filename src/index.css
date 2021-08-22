@@ -5,3 +5,7 @@ body {
   background: #14172c;
   font-weight: 400;
 }
+
+* {
+  box-sizing: border-box;
+}

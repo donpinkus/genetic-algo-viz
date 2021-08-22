@@ -17,12 +17,7 @@ class EvolutionVis extends Component {
 
     return (
       <div>
-        <svg
-          viewBox="-100 -100 200 200"
-          width="100%"
-          height="100%"
-          // style={{ border: "1px solid #14172B" }}
-        >
+        <svg viewBox="-100 -100 200 200" width="100%" height="100%">
           {/* {previousGenerations.reverse().map((population, i) => {
             return population.rockets.map((rocket, j) => {
               const genesToPath = rocket.posVectors.map(
