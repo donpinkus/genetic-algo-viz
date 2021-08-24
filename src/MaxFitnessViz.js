@@ -8,26 +8,20 @@ class MaxFitnessViz extends Component {
 
     const data = props.population.generationMaxFitnesses.map((maxFit, i) => ({
       maxFit,
-      i
+      i,
     }));
 
-    const min = _.minBy(data, d => d.maxFit).maxFit;
-    const max = _.maxBy(data, d => d.maxFit).maxFit;
+    const min = _.minBy(data, (d) => d.maxFit).maxFit;
+    const max = _.maxBy(data, (d) => d.maxFit).maxFit;
 
-    const maxI = _.maxBy(data, d => d.maxFit).i;
+    const maxI = _.maxBy(data, (d) => d.maxFit).i;
 
     console.log(min, max, maxI);
 
     // Scale X and Y.
-    const xScale = d3
-      .scaleLinear()
-      .domain([0, data.length])
-      .range([0, 200]);
+    const xScale = d3.scaleLinear().domain([0, data.length]).range([0, 200]);
 
-    const yScale = d3
-      .scaleLog()
-      .domain([min, max])
-      .range([200, 0]);
+    const yScale = d3.scaleLog().domain([min, max]).range([200, 0]);
 
     console.log(data[0].maxFit, yScale(data[0].maxFit));
     console.log(data[1].maxFit, yScale(data[1].maxFit));
@@ -36,8 +30,8 @@ class MaxFitnessViz extends Component {
 
     this.path = d3
       .line()
-      .x(d => xScale(d.i))
-      .y(d => yScale(d.maxFit))(data);
+      .x((d) => xScale(d.i))
+      .y((d) => yScale(d.maxFit))(data);
   }
 
   componentDidMount() {}
@@ -46,7 +40,20 @@ class MaxFitnessViz extends Component {
     return (
       <div>
         <svg viewBox="0 0 200 200" width="100%" height="100%">
-          <path d={this.path} stroke="white" strokeWidth="2" fill="none" />
+          <defs>
+            <linearGradient
+              id="e"
+              gradientTransform="rotate(0)"
+              x1="0"
+              x2="0"
+              y1="0"
+              y2="1"
+            >
+              <stop stop-color="#43F289" offset="10%" />
+              <stop stop-color="#DD425E" offset="90%" />
+            </linearGradient>
+          </defs>
+          <path d={this.path} stroke="url(#e)" strokeWidth="2" fill="none" />
         </svg>
       </div>
     );

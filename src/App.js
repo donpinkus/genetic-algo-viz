@@ -24,9 +24,9 @@ class App extends Component {
     this.originVec = { x: -60, y: -80 };
     this.targetVec = { x: 60, y: 80 };
 
-    this.generationCount = 15;
+    this.generationCount = 30;
 
-    const geneCount = 100;
+    const geneCount = 100; // TODO: changing genecount breaks?
 
     this.populations = [];
 
@@ -121,7 +121,7 @@ class App extends Component {
           />
           <SDashboardSection>
             <SDashboardHeader>
-              <div>Fitness function</div>
+              <div>Parameters</div>
               <div>Evolution over time</div>
               <div>Max fitness over time</div>
               <div>Final max fitness</div>
@@ -133,16 +133,6 @@ class App extends Component {
             />
             <DashboardRow
               population={this.populations[1]}
-              generationNumber={this.state.generationNumber}
-              frameNumber={this.state.frameNumber}
-            />
-            <DashboardRow
-              population={this.populations[2]}
-              generationNumber={this.state.generationNumber}
-              frameNumber={this.state.frameNumber}
-            />
-            <DashboardRow
-              population={this.populations[3]}
               generationNumber={this.state.generationNumber}
               frameNumber={this.state.frameNumber}
             />
